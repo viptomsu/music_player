@@ -5,6 +5,7 @@
 }
 
 :root{
+	--PI: 3.14159;
 	--primary-color: #ED2461;
 	--primary-light-1: rgba(237, 38, 98, 0.4);
 	--primary-light-2: rgba(237, 36, 96, 0.2);
@@ -29,6 +30,7 @@ ul{
 }
 
 .thumb{
+	aspect-ratio: 1/1;
 	background-size: cover;
 	background-position: center;
 	border-radius: 50%;
@@ -42,25 +44,30 @@ ul{
 	cursor: pointer;
 }
 
+
 #player{
 	margin: auto;
 	position: relative;
 	width: calc(500rem/16);
+	height: 100vh;
 	max-width: 100%;
 	background-color: whitesmoke;
 	border-radius: 4px;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.2),
-	0 0 40px rgba(0, 0, 0, 0.15);
+	display: flex;
+	flex-direction: column;
 }
 .dashboard{
+	position: relative;
+	width: inherit;
+	max-width : 100%;
 	background-color: white;
 	text-align: center;
 	display: flex;
 	flex-direction: column;
 	gap: 2rem;
 	padding-bottom: 2rem;
-	overflow: hidden;
-	/* background-color: ; */
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15),
+	0 5px 20px rgba(0, 0, 0, 0.1);
 }
 .dashboard header h4{
 	color: var(--primary-color);
@@ -70,16 +77,23 @@ ul{
 	--cd-width: 60%;
 	display: flex;
 	justify-content: center;
+	align-items: center;
 	-webkit-box-reflect: below 1px linear-gradient(transparent, rgba(255,255,255,.1));
 	position: relative;
+	transition: all .3s linear;
+}
+.cd.hide-cd{
+	--cd-width: 0%;
+	--progress-width: 0px;
 }
 .cd .playing-cd{
-	width: var(--cd-width);
-	aspect-ratio: 1 / 1;
+	width: calc(var(--cd-width) - 2 * var(--progress-width));
 	position: relative;
 	z-index: 1;
-	border: var(--progress-width) solid var(--primary-light-2);
-	animation: spin 20s linear forwards;
+	animation: spin 20s linear infinite;
+	animation-play-state: paused;
+	transition: all .3s linear;
+
 }
 .cd svg#progress {
 	width: var(--cd-width);
@@ -87,18 +101,26 @@ ul{
 	position: absolute;
 	transform: rotate(-90deg);
 	z-index: 2;
+	transition: all .3s linear;
 }
 svg#progress circle{
+	--radius: calc(50% - var(--progress-width)/2);
 	cx: 50%;
 	cy: 50%;
-	r: 48.5%;
+	r: var(--radius);
 	fill:none;
-	stroke: url(#progressColor);
+	stroke-dasharray: calc(var(--PI) * 2 * var(--radius));
 	stroke-width: var(--progress-width);
+	transition: all .3s linear;
+}
+svg#progress circle.progress__running{
+	stroke: url(#progressColor);
+	stroke-dashoffset: calc(var(--PI) * 2 * var(--radius));
 	stroke-linecap: round;
-	stroke-dasharray: calc(3.14 * 2 * 48.5%);
-	stroke-dashoffset: calc(3.14 * 2 * 48.5%);
-	animation: loading 20s linear forwards;
+	/* animation: loading 20s linear forwards; */
+}
+svg#progress circle.progress__bar{
+	stroke: var(--primary-light-2);
 }
 
 .controler{
@@ -110,6 +132,9 @@ svg#progress circle{
 	font-size: inherit;
 	color: inherit;
 }
+.controler .btn.active {
+	color: var(--primary-color);
+}
 .controler #btn-play{
 	padding: 0;
 	font-size: 2.5em;
@@ -118,14 +143,50 @@ svg#progress circle{
 	box-shadow: 0 10px 15px var(--primary-light-1),
 	0 10px 30px var(--primary-light-2);
 }
-.controler #btn-play i {
+.controler #btn-play i[class*="-play"] {
 	display: block;
+}
+#btn-play i[class*="-pause"] {
+	display: none;
+}
+#btn-play.playing i[class*="-pause"]{
+	display: block;
+}
+#btn-play.playing i[class*="-play"]{
+	display: none;
+}
+#btn-volume{
+	font-size: 2rem;
+	color: inherit;
+}
+#btn-volume i[class*='-slash'] {
+	display: none;
+}
+#btn-volume.muted i[class*='-slash'] {
+	display: block;
+}
+#btn-minimize{
+	position: absolute;
+	background-color: var(--primary-light-2);
+	border: 1px solid var(--primary-light-1);
+	border-radius: 1rem;
+	padding: .25rem 1rem;
+	bottom: 0;
+	left: 50%;
+	transform: translate(-50%, 50%);
+	background-color: white;
+	color: inherit;
+	font-family: inherit;
 }
 
 .playlist{
+	flex: 1;
 	display: flex;
 	flex-direction: column;
 	padding: .75rem;
+	padding-top: 1rem;
+	overflow-y: auto;
+	height: 200px;
 }
 .song{
 	margin: .375rem 0;
@@ -139,12 +200,20 @@ svg#progress circle{
 	0 2px 10px rgba(0, 0, 0, 0.1);
 	cursor: pointer;
 }
+.song.active {
+	background-color: var(--primary-color);
+	color: whitesmoke;
+}
 .song .thumb{
 	width: 4rem;
-	aspect-ratio: 1/1;
 }
 .song__infor{
 	flex: 1;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.song__name, .song__artist{
+	animation: running_title 5s linear infinite;
 }
 .options i{
 	font-size: 2rem;
@@ -166,7 +235,7 @@ svg#progress circle{
 	background-color: var(--secondary-color);
 	display: flex;
 	justify-content: space-around;
-	font-size: 2rem;
+	font-size: 1.75rem;
 	color: rgba(255,255,255,.3);
 }
 .menu li{
@@ -176,6 +245,10 @@ svg#progress circle{
 	color: var(--primary-color);
 }
 
+footer ul.menu {
+	max-width: 100%;
+	width: 100%;
+}
 
 @keyframes loading {
 	100%{
@@ -185,5 +258,35 @@ svg#progress circle{
 @keyframes spin {
 	100%{
 		transform: rotate(360deg);
+	}
+}
+
+/* mobile  */
+@media screen and (max-width:46.25em) {
+	.song__name{
+		font-size: 1.4rem;
+	} 
+}
+@media screen and (min-width:64em) {
+	.playlist::-webkit-scrollbar {
+		width: 5px;
+	}
+	::-webkit-scrollbar-track {
+		background: #f1f1f1;
+		display: none;
+	}
+	::-webkit-scrollbar-thumb {
+		background: #888;
+		border-radius: 10px;
+		visibility: hidden;
+	}
+	::-webkit-scrollbar-thumb:hover {
+		background: #555;
+	}
+	.playlist:hover::-webkit-scrollbar-thumb {
+		visibility: visible;
+	}
+	.playlist{
+		margin-left: 5px;
 	}
 }
