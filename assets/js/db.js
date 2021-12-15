@@ -41,6 +41,13 @@ let songs = [
    new Song(29, 'Melody', 'Lost Frequencies', 'https://m.media-amazon.com/images/I/91jiuD81e3L._SS500_.jpg', 'm4a'),
    new Song(30, 'Nevada', 'Vicetone', 'https://i1.sndcdn.com/artworks-000174788935-d1hrl9-t500x500.jpg', 'm4a'),
    new Song(31, 'Time', 'Syn Cole', 'https://geo-media.beatport.com/image_size/1400x1400/b1fa975d-7b22-443b-8002-e398a5cc46a2.jpg'),
+   new Song(32, 'See Your Face - Nightcore', 'Alan Walker ft.Laura', 'https://i.ytimg.com/vi/gx8DT4vCM8o/maxresdefault.jpg'),
+   new Song(33, 'The Nights', 'Avicii', 'https://i1.sndcdn.com/artworks-000093682541-dudmgc-t500x500.jpg'),
+   new Song(34, 'The Days', 'Avicii', 'https://i.ytimg.com/vi/F41kHjKtOJc/maxresdefault.jpg'),
+   new Song(35, 'Waiting For Love', 'Avicii', 'https://i1.sndcdn.com/artworks-000221561316-q7cpxv-t500x500.jpg'),
+   new Song(36, 'Remember When', 'Nightcore', 'https://i.insider.com/5f40080242f43f001ddfe608?width=1000&format=jpeg&auto=webp'),
+   new Song(37, 'Close To The Sun', 'TheFatRat', 'https://i1.sndcdn.com/artworks-000594815919-6pvfn3-t500x500.jpg'),
+   new Song(38, 'Sunlight', 'TheFatRat', 'https://i1.sndcdn.com/artworks-000548985387-je6a25-t500x500.jpg'),
 ];
 
 export default songs;
